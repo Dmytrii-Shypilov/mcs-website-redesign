@@ -1,0 +1,104 @@
+@use "mixins" as *;
+
+.grid {
+  display: grid;
+  gap: 20px;
+
+  @include up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.full {
+  @include up(md) {
+    grid-column: 1 / -1;
+  }
+}
+.field {
+  display: grid;
+  gap: 8px;
+
+  span {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 50px;
+    padding: 12px 14px;
+    font-size: 16px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: var(--steel-300);
+    }
+    &:focus {
+      outline: none;
+      border-color: var(--blue-700);
+      box-shadow: 0 0 0 3px rgba(0, 75, 141, 0.12);
+    }
+  }
+  textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+}
+.consent {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--ink-2);
+
+  input {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    accent-color: var(--blue-700);
+  }
+  a {
+    color: var(--blue-700);
+    text-decoration: underline;
+  }
+}
+.submit {
+  margin-top: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 54px;
+  padding: 14px 32px;
+  background: var(--blue-700);
+  color: #fff;
+  border: 0;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s var(--ease);
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+  &:hover {
+    background: var(--navy-900);
+  }
+}
+.status {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--blue-700);
+}

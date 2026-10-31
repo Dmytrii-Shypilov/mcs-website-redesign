@@ -1,0 +1,128 @@
+@use "mixins" as *;
+
+/* ---------- Inner page hero ---------- */
+.page_hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(440px, 62vh, 600px);
+  display: flex;
+  align-items: flex-end;
+  color: #fff;
+  padding-top: calc(var(--header-h) + 48px);
+  padding-bottom: clamp(48px, 7vw, 88px);
+  background: var(--navy-950);
+}
+.page_hero_img {
+  object-fit: cover;
+  z-index: -2;
+}
+.page_hero_shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(0, 26, 51, 0.94) 0%, rgba(0, 39, 77, 0.82) 45%, rgba(0, 39, 77, 0.45) 100%),
+    linear-gradient(0deg, rgba(0, 26, 51, 0.6) 0%, transparent 50%);
+}
+.page_hero_title {
+  color: #fff;
+  font-size: clamp(40px, 6vw, 72px);
+  max-width: 860px;
+}
+.page_hero_lead {
+  margin-top: 24px;
+  max-width: 640px;
+  font-size: clamp(16px, 1.5vw, 19px);
+  color: var(--steel-200);
+}
+
+.crumbs {
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--steel-300);
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+  }
+  li + li::before {
+    content: "/";
+    margin-right: 8px;
+    color: var(--gold);
+  }
+  a:hover {
+    color: #fff;
+  }
+  [aria-current] {
+    color: #fff;
+  }
+}
+
+/* ---------- CTA band ---------- */
+.cta {
+  position: relative;
+  background: var(--navy-900);
+  color: #fff;
+  padding-block: clamp(64px, 9vw, 112px);
+  overflow: hidden;
+  isolation: isolate;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url("/images/world-map.svg") center / 120% auto no-repeat;
+    opacity: 0.9;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--gutter);
+    right: var(--gutter);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+}
+.cta_inner {
+  display: grid;
+  gap: 40px;
+
+  @include up(lg) {
+    grid-template-columns: 1.4fr 1fr;
+    align-items: end;
+  }
+}
+.cta_title {
+  color: #fff;
+  font-size: clamp(32px, 4.4vw, 52px);
+  max-width: 720px;
+}
+.cta_text {
+  margin-top: 20px;
+  color: var(--steel-200);
+  max-width: 560px;
+}
+.cta_actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+
+  @include up(lg) {
+    align-items: flex-end;
+  }
+}
+.cta_phone {
+  font-size: 15px;
+  color: var(--steel-200);
+  border-bottom: 1px solid var(--line-dark);
+  padding-bottom: 2px;
+
+  &:hover {
+    color: #fff;
+  }
+}

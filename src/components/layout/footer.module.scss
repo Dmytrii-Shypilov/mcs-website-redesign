@@ -1,0 +1,86 @@
+@use "mixins" as *;
+
+.footer {
+  background: var(--navy-950);
+  color: var(--steel-200);
+  padding-top: clamp(64px, 8vw, 96px);
+  font-size: 15px;
+}
+
+.grid {
+  display: grid;
+  gap: 48px;
+  padding-bottom: 56px;
+
+  @include up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @include up(lg) {
+    grid-template-columns: 1.4fr 1fr 0.8fr 1.2fr;
+    gap: 56px;
+  }
+}
+
+.logo {
+  height: 44px;
+  width: auto;
+  margin-bottom: 24px;
+}
+.about {
+  max-width: 340px;
+  color: var(--steel-300);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.col_title {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  margin-bottom: 20px;
+}
+
+.col ul {
+  display: grid;
+  gap: 12px;
+}
+.col a {
+  transition: color 0.2s;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.contact {
+  font-style: normal;
+  display: grid;
+  gap: 14px;
+
+  p {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    color: var(--gold);
+  }
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 24px;
+  border-top: 1px solid var(--line-dark);
+  font-size: 13px;
+  color: var(--steel-300);
+}
