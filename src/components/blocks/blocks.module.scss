@@ -54,22 +54,22 @@
   }
 }
 
-/* Contained image (full variant): whole photo centred at banner height, edges faded into the navy.
-   Phones: the photo follows the copy as an uncropped block. */
-.page_hero_contain {
-  flex-direction: column;
-  align-items: stretch;
-  min-height: 0;
+/* Full variant with a phone image: phones show the copy on navy, then the phone photo uncropped;
+   tablet and up use the normal full-bleed hero. */
+.page_hero_stacked {
+  @include down(md) {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
 
-  @include up(md) {
-    flex-direction: row;
-    align-items: flex-end;
-    min-height: clamp(480px, 66vh, 640px);
+    .page_hero_img,
+    .page_hero_shade {
+      display: none;
+    }
   }
 }
-.contain_media {
+.mobile_media {
   position: relative;
-  order: 2;
   width: calc(100% - 2 * var(--gutter));
   max-width: 440px;
   aspect-ratio: 440 / 528;
@@ -78,31 +78,7 @@
   border-radius: var(--radius);
 
   @include up(md) {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    z-index: -2;
-    width: auto;
-    max-width: none;
-    height: 100%;
-    margin: 0;
-    border-radius: 0;
-    transform: translateX(-50%);
-    // soft left/right edges so the photo melts into the navy background
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
-  }
-}
-.contain_shade {
-  display: none;
-
-  @include up(md) {
-    display: block;
-    // lighter than the cover shade: keep text legible on the left, leave the people visible
-    background:
-      linear-gradient(90deg, rgba(0, 26, 51, 0.9) 0%, rgba(0, 39, 77, 0.55) 35%, rgba(0, 39, 77, 0.12) 60%, rgba(0, 39, 77, 0.12) 100%),
-      linear-gradient(0deg, rgba(0, 26, 51, 0.7) 0%, transparent 45%);
+    display: none;
   }
 }
 

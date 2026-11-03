@@ -18,11 +18,10 @@ type PageHeroProps = {
   /** "full": full-bleed background image (landing pages). "split": text left, framed image right (service pages). */
   variant?: "full" | "split";
   /**
-   * Full variant only. "cover" fills the banner (large landscape photos). "contain" shows the whole photo,
-   * centred at banner height with faded edges — for small or portrait photos where people must stay visible.
-   * On phones a contained photo sits below the copy.
+   * Full variant only: a different photo for phones, shown uncropped below the copy (the full-bleed
+   * `image` is then used from tablet width up). Use when the desktop photo would hide the subject on a phone.
    */
-  imageFit?: "cover" | "contain";
+  mobileImage?: { src: string; alt: string };
   objectPosition?: string;
 };
 
@@ -34,12 +33,12 @@ export default function PageHero({
   imageAlt,
   crumbs,
   variant = "full",
-  imageFit = "cover",
+  mobileImage,
   objectPosition,
 }: PageHeroProps) {
   const all = [{ label: "Home", href: "/" }, ...crumbs];
   const split = variant === "split";
-  const contain = !split && imageFit === "contain";
+  const stacked = !split && Boolean(mobileImage);
 
   const breadcrumbs = (
     <nav aria-label="Breadcrumb" className={s.crumbs}>
@@ -64,7 +63,7 @@ export default function PageHero({
 
   return (
     <section
-      className={[s.page_hero, split && s.page_hero_split, contain && s.page_hero_contain].filter(Boolean).join(" ")}
+      className={[s.page_hero, split && s.page_hero_split, stacked && s.page_hero_stacked].filter(Boolean).join(" ")}
     >
       {split ? (
         <Container className={s.split_inner}>
@@ -83,22 +82,6 @@ export default function PageHero({
             </div>
           </div>
         </Container>
-      ) : contain ? (
-        <>
-          <div className={s.contain_media}>
-            <Image
-              src={image}
-              alt={imageAlt}
-              fill
-              priority
-              sizes="(min-width: 768px) 560px, 100vw"
-              className={s.hero_settle}
-              style={{ objectFit: "cover", objectPosition }}
-            />
-          </div>
-          <div className={[s.page_hero_shade, s.contain_shade].join(" ")} aria-hidden />
-          <Container className={s.page_hero_inner}>{copy}</Container>
-        </>
       ) : (
         <>
           <Image
@@ -106,12 +89,25 @@ export default function PageHero({
             alt={imageAlt}
             fill
             priority
-            sizes="100vw"
+            // with a phone image, phones only fetch a tiny placeholder of the desktop photo
+            sizes={mobileImage ? "(min-width: 768px) 100vw, 16px" : "100vw"}
             className={[s.page_hero_img, s.hero_settle].join(" ")}
             style={objectPosition ? { objectPosition } : undefined}
           />
           <div className={s.page_hero_shade} aria-hidden />
           <Container className={s.page_hero_inner}>{copy}</Container>
+          {mobileImage && (
+            <div className={s.mobile_media}>
+              <Image
+                src={mobileImage.src}
+                alt={mobileImage.alt}
+                fill
+                priority
+                sizes="(min-width: 768px) 16px, 100vw"
+                style={{ objectFit: "cover" }}
+              />
+            </div>
+          )}
         </>
       )}
 

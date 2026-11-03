@@ -22,8 +22,16 @@ import {
 const heroAlt = "Business leaders walking together in Dubai's financial district";
 
 // Art direction: wide photo (mirrored) on tablet/desktop, portrait crop with the people centred on phones.
-function HeroPicture({ className, imgClassName }: { className: string; imgClassName: string }) {
-  const common = { alt: heroAlt, fill: true, priority: true, sizes: "100vw" };
+function HeroPicture({
+  className,
+  imgClassName,
+  decorative,
+}: {
+  className: string;
+  imgClassName: string;
+  decorative?: boolean;
+}) {
+  const common = { alt: decorative ? "" : heroAlt, fill: true, priority: true, sizes: "100vw" };
   const {
     props: { srcSet: wide },
   } = getImageProps({ ...common, src: "/images/walking-persons.webp" });
@@ -46,7 +54,11 @@ export default function HomePage() {
       {/* HERO */}
       <section className={s.hero} aria-labelledby="hero-title">
         <div className={s.hero_media}>
-          <HeroPicture className={s.hero_picture} imgClassName={s.hero_img} />
+          {/* Phones only: blurred copy of the photo extends it behind the copy (same file, no extra download) */}
+          <div className={s.hero_backdrop} aria-hidden>
+            <HeroPicture className={s.hero_picture} imgClassName={s.hero_backdrop_img} decorative />
+          </div>
+          <HeroPicture className={[s.hero_picture, s.hero_sharp].join(" ")} imgClassName={s.hero_img} />
           <div className={s.hero_shade} aria-hidden />
         </div>
         <Container className={s.hero_inner}>

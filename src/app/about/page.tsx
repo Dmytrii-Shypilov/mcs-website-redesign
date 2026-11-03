@@ -23,9 +23,9 @@ export default function AboutPage() {
         eyebrow="About MCS"
         title="Experts in strategic government and corporate consultancy"
         lead="A Dubai-based consultancy that helps international organisations build a lasting presence in the Middle East and Africa."
-        image="/images/talking-persons-2.webp"
-        imageAlt="Consultants in discussion"
-        imageFit="contain"
+        image="/images/dubai-business.webp"
+        imageAlt="Business district in Dubai"
+        mobileImage={{ src: "/images/talking-persons-2.webp", alt: "Consultants in discussion" }}
         crumbs={[{ label: "About", href: "/about" }]}
       />
 
