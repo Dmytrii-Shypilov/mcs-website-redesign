@@ -36,6 +36,74 @@
   color: var(--steel-200);
 }
 
+/* Slow settle of the hero image on load */
+@keyframes hero-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.page_hero {
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero_settle {
+    animation: hero-settle 1.6s var(--ease) both;
+  }
+}
+
+/* Split variant (service pages): copy left, framed image right */
+.page_hero_split {
+  min-height: 0;
+  display: block;
+  padding-bottom: clamp(56px, 7vw, 96px);
+}
+.split_inner {
+  display: grid;
+  gap: 48px;
+
+  @include up(lg) {
+    grid-template-columns: 7fr 5fr;
+    gap: clamp(48px, 6vw, 88px);
+    align-items: center;
+  }
+}
+.split_copy {
+  min-width: 0;
+}
+.split_media {
+  position: relative;
+  padding: 0 14px 14px 0;
+
+  // thin gold frame offset down-right
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 14px 0 0 14px;
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+  }
+}
+.split_frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  aspect-ratio: 16 / 10;
+  max-height: 340px;
+  width: 100%;
+  background: var(--navy-900);
+
+  @include up(lg) {
+    aspect-ratio: 4 / 3;
+    max-height: none;
+  }
+}
+.page_hero_title_split {
+  font-size: clamp(36px, 4.6vw, 60px);
+}
+
 .crumbs {
   margin-bottom: 28px;
   font-size: 13px;

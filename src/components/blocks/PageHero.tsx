@@ -15,33 +15,79 @@ type PageHeroProps = {
   image: string;
   imageAlt: string;
   crumbs: Crumb[];
+  /** "full": full-bleed background image (landing pages). "split": text left, framed image right (service pages). */
+  variant?: "full" | "split";
+  objectPosition?: string;
 };
 
-export default function PageHero({ eyebrow, title, lead, image, imageAlt, crumbs }: PageHeroProps) {
+export default function PageHero({
+  eyebrow,
+  title,
+  lead,
+  image,
+  imageAlt,
+  crumbs,
+  variant = "full",
+  objectPosition,
+}: PageHeroProps) {
   const all = [{ label: "Home", href: "/" }, ...crumbs];
+  const split = variant === "split";
+
+  const breadcrumbs = (
+    <nav aria-label="Breadcrumb" className={s.crumbs}>
+      <ol>
+        {all.map((c, i) => (
+          <li key={c.href}>
+            {i < all.length - 1 ? <Link href={c.href}>{c.label}</Link> : <span aria-current="page">{c.label}</span>}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+
+  const copy = (
+    <>
+      {breadcrumbs}
+      <Eyebrow light>{eyebrow}</Eyebrow>
+      <h1 className={[s.page_hero_title, split && s.page_hero_title_split].filter(Boolean).join(" ")}>{title}</h1>
+      {lead && <p className={s.page_hero_lead}>{lead}</p>}
+    </>
+  );
 
   return (
-    <section className={s.page_hero}>
-      <Image src={image} alt={imageAlt} fill priority sizes="100vw" className={s.page_hero_img} />
-      <div className={s.page_hero_shade} aria-hidden />
-      <Container className={s.page_hero_inner}>
-        <nav aria-label="Breadcrumb" className={s.crumbs}>
-          <ol>
-            {all.map((c, i) => (
-              <li key={c.href}>
-                {i < all.length - 1 ? (
-                  <Link href={c.href}>{c.label}</Link>
-                ) : (
-                  <span aria-current="page">{c.label}</span>
-                )}
-              </li>
-            ))}
-          </ol>
-        </nav>
-        <Eyebrow light>{eyebrow}</Eyebrow>
-        <h1 className={s.page_hero_title}>{title}</h1>
-        {lead && <p className={s.page_hero_lead}>{lead}</p>}
-      </Container>
+    <section className={[s.page_hero, split && s.page_hero_split].filter(Boolean).join(" ")}>
+      {split ? (
+        <Container className={s.split_inner}>
+          <div className={s.split_copy}>{copy}</div>
+          <div className={s.split_media}>
+            <div className={s.split_frame}>
+              <Image
+                src={image}
+                alt={imageAlt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className={s.hero_settle}
+                style={{ objectFit: "cover", objectPosition }}
+              />
+            </div>
+          </div>
+        </Container>
+      ) : (
+        <>
+          <Image
+            src={image}
+            alt={imageAlt}
+            fill
+            priority
+            sizes="100vw"
+            className={[s.page_hero_img, s.hero_settle].join(" ")}
+            style={objectPosition ? { objectPosition } : undefined}
+          />
+          <div className={s.page_hero_shade} aria-hidden />
+          <Container className={s.page_hero_inner}>{copy}</Container>
+        </>
+      )}
 
       <JsonLd
         data={{

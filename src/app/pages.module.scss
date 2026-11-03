@@ -109,16 +109,37 @@
   }
 }
 .offer {
+  position: relative;
   background: #fff;
   padding: 40px 36px;
+
+  // top rule: --line at rest, --gold on hover
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--line);
+    transition: background-color 0.3s var(--ease);
+  }
+  &:hover::before {
+    background: var(--gold);
+  }
 }
 .offer_num {
   display: block;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.14em;
-  color: var(--gold);
+  color: var(--ink-3);
   margin-bottom: 24px;
+  transition: color 0.3s var(--ease);
+
+  .offer:hover & {
+    color: var(--gold);
+  }
 }
 .offer_title {
   font-size: 26px;
@@ -192,7 +213,32 @@
   }
 }
 
-/* ---------- Related ---------- */
+/* ---------- Partner note (regulated services) ---------- */
+.partner_note {
+  background: var(--mist);
+  padding-block: 28px;
+  border-bottom: 1px solid var(--line);
+}
+.partner_note_inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 880px;
+  padding-left: 20px;
+  border-left: 2px solid var(--gold);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.partner_note_icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--blue-700);
+}
+
+/* ---------- Related ("Combine with") ---------- */
 .related {
   display: grid;
   gap: 24px;
@@ -200,12 +246,15 @@
   @include up(md) {
     grid-template-columns: 1fr 1fr;
   }
+
+  > li {
+    height: 100%;
+  }
 }
-.related_link {
-  position: relative;
-  display: block;
+.related_card {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  padding: 36px 72px 36px 36px;
   background: #fff;
   border: 1px solid var(--line);
   transition: border-color 0.3s var(--ease);
@@ -213,10 +262,36 @@
   &:hover {
     border-color: var(--blue-700);
   }
-  .row_num {
-    font-size: 32px;
-    margin-bottom: 16px;
+}
+.related_media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--navy-900);
+}
+.related_img {
+  object-fit: cover;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .related_img {
+    transition: transform 0.6s var(--ease);
   }
+  .related_card:hover .related_img {
+    transform: scale(1.04);
+  }
+}
+.related_body {
+  position: relative;
+  display: block;
+  padding: 32px 72px 36px 36px;
+}
+.related_num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 1;
+  color: var(--gold);
+  margin-bottom: 16px;
 }
 .related_title {
   display: block;
@@ -233,13 +308,13 @@
 .related_arrow {
   position: absolute;
   right: 32px;
-  top: 40px;
+  top: 36px;
   width: 22px;
   height: 22px;
   color: var(--blue-700);
-  transition: transform 0.3s var(--ease);
+  transition: transform 0.25s var(--ease);
 
-  .related_link:hover & {
+  .related_card:hover & {
     transform: translateX(4px);
   }
 }

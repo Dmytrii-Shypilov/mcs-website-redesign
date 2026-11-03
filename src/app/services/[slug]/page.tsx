@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -9,8 +10,8 @@ import Faqs from "@/components/blocks/Faqs";
 import JsonLd from "@/components/seo/JsonLd";
 import { Container, Eyebrow, Section, SectionHeading } from "@/components/ui";
 import Reveal from "@/components/ui/Reveal";
-import { IconArrow, IconCheck } from "@/components/ui/icons";
-import { getService, services, site } from "@/content/site";
+import { IconArrow, IconCheck, IconShield } from "@/components/ui/icons";
+import { getPillar, getService, services, site } from "@/content/site";
 
 type Props = { params: { slug: string } };
 
@@ -23,16 +24,20 @@ export const dynamicParams = false;
 export function generateMetadata({ params }: Props): Metadata {
   const sv = services.find((x) => x.slug === params.slug);
   if (!sv) return {};
+  // metaTitles that already carry the brand bypass the "%s | MCS Consultancy" template.
+  const branded = sv.metaTitle.endsWith(`| ${site.name}`);
+  const ogImage = sv.ogImage ?? sv.image;
   return {
-    title: sv.metaTitle,
+    title: branded ? { absolute: sv.metaTitle } : sv.metaTitle,
     description: sv.metaDescription,
     alternates: { canonical: `/services/${sv.slug}` },
     openGraph: {
       title: sv.metaTitle,
       description: sv.metaDescription,
       url: `/services/${sv.slug}`,
-      images: [{ url: sv.image }],
+      images: [{ url: ogImage }],
     },
+    twitter: { card: "summary_large_image", title: sv.metaTitle, description: sv.metaDescription, images: [ogImage] },
   };
 }
 
@@ -40,21 +45,35 @@ export default function ServicePage({ params }: Props) {
   const sv = services.find((x) => x.slug === params.slug);
   if (!sv) notFound();
 
-  const others = sv.related.map(getService);
+  const pillar = getPillar(sv.pillar);
+  const related = sv.related.map(getService);
 
   return (
     <>
       <PageHero
-        eyebrow={`Practice ${sv.number}`}
+        variant="split"
+        eyebrow={pillar.title}
         title={sv.title}
         lead={sv.lead}
         image={sv.image}
         imageAlt={sv.imageAlt}
+        objectPosition={sv.objectPosition}
         crumbs={[
           { label: "Services", href: "/services" },
           { label: sv.shortTitle, href: `/services/${sv.slug}` },
         ]}
       />
+
+      {sv.partnerNote && (
+        <aside className={p.partner_note} aria-label="How this service is delivered">
+          <Container>
+            <p className={p.partner_note_inner}>
+              <IconShield aria-hidden className={p.partner_note_icon} />
+              <span>{sv.partnerNote}</span>
+            </p>
+          </Container>
+        </aside>
+      )}
 
       {/* What we do */}
       <Section labelledBy="offer-title">
@@ -62,7 +81,7 @@ export default function ServicePage({ params }: Props) {
           <SectionHeading id="offer-title" eyebrow="What we do" title="How we support you" align="split" intro={sv.summary} />
           <ul className={p.offer_grid}>
             {sv.offerings.map((o, i) => (
-              <Reveal as="li" key={o.title} delay={(i % 3) * 0.06} className={p.offer}>
+              <Reveal as="li" key={o.title} delay={(i % 3) * 0.08} className={p.offer}>
                 <span className={p.offer_num}>{String(i + 1).padStart(2, "0")}</span>
                 <h3 className={p.offer_title}>{o.title}</h3>
                 <p className={p.offer_text}>{o.text}</p>
@@ -119,15 +138,27 @@ export default function ServicePage({ params }: Props) {
         <Container>
           <SectionHeading id="related-title" eyebrow="Related services" title="Combine with" />
           <ul className={p.related}>
-            {others.map((o) => (
-              <li key={o.slug}>
-                <Link href={`/services/${o.slug}`} className={p.related_link}>
-                  <span className={p.row_num}>{o.number}</span>
-                  <span className={p.related_title}>{o.title}</span>
-                  <span className={p.related_text}>{o.summary}</span>
-                  <IconArrow aria-hidden className={p.related_arrow} />
+            {related.map((o, i) => (
+              <Reveal as="li" key={o.slug} delay={i * 0.08}>
+                <Link href={`/services/${o.slug}`} className={p.related_card}>
+                  <div className={p.related_media}>
+                    <Image
+                      src={o.image}
+                      alt=""
+                      fill
+                      sizes="(min-width: 768px) 40vw, 100vw"
+                      className={p.related_img}
+                      style={o.objectPosition ? { objectPosition: o.objectPosition } : undefined}
+                    />
+                  </div>
+                  <div className={p.related_body}>
+                    <span className={p.related_num}>{o.number}</span>
+                    <span className={p.related_title}>{o.title}</span>
+                    <span className={p.related_text}>{o.summary}</span>
+                    <IconArrow aria-hidden className={p.related_arrow} />
+                  </div>
                 </Link>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </Container>

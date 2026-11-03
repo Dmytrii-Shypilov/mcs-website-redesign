@@ -57,6 +57,18 @@ html {
   }
 }
 
+/* Honour the OS "reduce motion" setting for every CSS transition and animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
 body {
   font-family: var(--font-body);
   font-size: 16px;
