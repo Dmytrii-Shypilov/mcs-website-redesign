@@ -10,7 +10,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { Container, Eyebrow, Section, SectionHeading } from "@/components/ui";
 import Reveal from "@/components/ui/Reveal";
 import { IconArrow, IconCheck } from "@/components/ui/icons";
-import { services, site } from "@/content/site";
+import { getService, services, site } from "@/content/site";
 
 type Props = { params: { slug: string } };
 
@@ -40,7 +40,7 @@ export default function ServicePage({ params }: Props) {
   const sv = services.find((x) => x.slug === params.slug);
   if (!sv) notFound();
 
-  const others = services.filter((x) => x.slug !== sv.slug);
+  const others = sv.related.map(getService);
 
   return (
     <>

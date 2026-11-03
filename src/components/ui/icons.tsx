@@ -1,3 +1,5 @@
+import type { PillarId } from "@/content/site";
+
 type P = React.SVGProps<SVGSVGElement>;
 
 const base = {
@@ -91,6 +93,20 @@ export const IconGrowth = (p: P) => (
   </svg>
 );
 
+export const IconCrane = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M7 21V4M4 21h8M7 4l13 3M7 4 4 7h3M20 7v5M18 12h4v3h-4zM7 8h4M7 12h4M7 16h4" />
+  </svg>
+);
+
+/* Disclosure icon for partner-delivered services */
+export const IconShield = (p: P) => (
+  <svg {...base} {...p}>
+    <path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6l-7-3Z" />
+    <path d="m9 12 2 2 4-4" />
+  </svg>
+);
+
 export const IconLinkedIn = (p: P) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
     <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.5h4V21H3V9.5Zm6.5 0h3.8v1.6h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.7 2.6 4.7 6V21h-4v-5.1c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4V9.5Z" />
@@ -111,8 +127,10 @@ export const IconInstagram = (p: P) => (
   </svg>
 );
 
-export const serviceIcons: Record<string, (p: P) => JSX.Element> = {
-  "corporate-services": IconBuilding,
-  "government-relations": IconColumns,
-  "capital-advisory": IconGrowth,
+/** Icon per service pillar. */
+export const pillarIcons: Record<PillarId, (p: P) => JSX.Element> = {
+  "market-entry": IconBuilding,
+  "capital-finance": IconGrowth,
+  "strategy-governance": IconColumns,
+  "real-assets": IconCrane,
 };

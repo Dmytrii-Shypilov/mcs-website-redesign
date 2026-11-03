@@ -15,6 +15,8 @@ const nextConfig = {
   async redirects() {
     return [
       { source: "/business", destination: "/services", permanent: true },
+      { source: "/services/corporate-services", destination: "/services/company-formation", permanent: true },
+      { source: "/services/capital-advisory", destination: "/services/capital-markets", permanent: true },
     ];
   },
   async headers() {

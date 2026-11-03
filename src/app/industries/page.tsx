@@ -5,22 +5,13 @@ import PageHero from "@/components/blocks/PageHero";
 import CtaBand from "@/components/blocks/CtaBand";
 import { Container, Section, SectionHeading, TextLink } from "@/components/ui";
 import Reveal from "@/components/ui/Reveal";
-import { industries } from "@/content/site";
+import { getService, industries } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Industries We Serve",
   description:
     "Consultancy for finance and banking, capital markets, private equity, real estate, construction and technology companies across the UAE, GCC and Africa.",
   alternates: { canonical: "/industries" },
-};
-
-const relatedService: Record<string, { href: string; label: string }> = {
-  "finance-banking": { href: "/services/government-relations", label: "Government Relations" },
-  "capital-markets": { href: "/services/capital-advisory", label: "Capital Facilitation" },
-  "private-equity": { href: "/services/capital-advisory", label: "Capital Facilitation" },
-  "real-estate": { href: "/services/corporate-services", label: "Corporate Services" },
-  construction: { href: "/services/government-relations", label: "Government Relations" },
-  technology: { href: "/services/corporate-services", label: "Corporate Services" },
 };
 
 export default function IndustriesPage() {
@@ -46,7 +37,7 @@ export default function IndustriesPage() {
           />
           <ul className={p.sector_list}>
             {industries.map((ind, i) => {
-              const rel = relatedService[ind.id];
+              const rel = getService(ind.service);
               return (
                 <Reveal as="li" key={ind.id} className={p.sector}>
                   <div id={ind.id} className={p.anchor} />
@@ -55,7 +46,7 @@ export default function IndustriesPage() {
                   <p className={p.sector_text}>{ind.text}</p>
                   {rel && (
                     <div className={p.sector_link}>
-                      <TextLink href={rel.href}>{rel.label}</TextLink>
+                      <TextLink href={`/services/${rel.slug}`}>{rel.shortTitle}</TextLink>
                     </div>
                   )}
                 </Reveal>

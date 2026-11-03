@@ -4,7 +4,7 @@ import Link from "next/link";
 import s from "./home.module.scss";
 import { ButtonLink, Container, Eyebrow, Section, SectionHeading, TextLink } from "@/components/ui";
 import Reveal from "@/components/ui/Reveal";
-import { IconArrow, IconCheck, serviceIcons } from "@/components/ui/icons";
+import { IconArrow, IconCheck, pillarIcons } from "@/components/ui/icons";
 import CtaBand from "@/components/blocks/CtaBand";
 import Partners from "@/components/blocks/Partners";
 import { approach, industries, regions, services, site } from "@/content/site";
@@ -114,7 +114,7 @@ export default function HomePage() {
           />
           <ul className={s.services}>
             {services.map((sv, i) => {
-              const Icon = serviceIcons[sv.slug];
+              const Icon = pillarIcons[sv.pillar];
               return (
                 <Reveal as="li" key={sv.slug} delay={i * 0.08} className={s.service}>
                   <Link href={`/services/${sv.slug}`} className={s.service_link}>
