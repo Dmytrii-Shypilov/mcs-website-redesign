@@ -25,6 +25,7 @@ export default function AboutPage() {
         lead="A Dubai-based consultancy that helps international organisations build a lasting presence in the Middle East and Africa."
         image="/images/talking-persons-2.webp"
         imageAlt="Consultants in discussion"
+        imageFit="contain"
         crumbs={[{ label: "About", href: "/about" }]}
       />
 

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 
 import s from "./home.module.scss";
@@ -19,20 +19,36 @@ import {
   site,
 } from "@/content/site";
 
+const heroAlt = "Business leaders walking together in Dubai's financial district";
+
+// Art direction: wide photo (mirrored) on tablet/desktop, portrait crop with the people centred on phones.
+function HeroPicture({ className, imgClassName }: { className: string; imgClassName: string }) {
+  const common = { alt: heroAlt, fill: true, priority: true, sizes: "100vw" };
+  const {
+    props: { srcSet: wide },
+  } = getImageProps({ ...common, src: "/images/walking-persons.webp" });
+  const {
+    props: { srcSet: portrait, ...img },
+  } = getImageProps({ ...common, src: "/images/walking-persons-mob.webp" });
+
+  return (
+    <picture className={className}>
+      <source media="(min-width: 768px)" srcSet={wide} />
+      {/* eslint-disable-next-line jsx-a11y/alt-text -- alt comes from getImageProps */}
+      <img {...img} srcSet={portrait} className={imgClassName} />
+    </picture>
+  );
+}
+
 export default function HomePage() {
   return (
     <>
       {/* HERO */}
       <section className={s.hero} aria-labelledby="hero-title">
-        <Image
-          src="/images/walking-persons.webp"
-          alt="Business leaders walking together in Dubai's financial district"
-          fill
-          priority
-          sizes="100vw"
-          className={s.hero_img}
-        />
-        <div className={s.hero_shade} aria-hidden />
+        <div className={s.hero_media}>
+          <HeroPicture className={s.hero_picture} imgClassName={s.hero_img} />
+          <div className={s.hero_shade} aria-hidden />
+        </div>
         <Container className={s.hero_inner}>
           <div className={s.hero_copy}>
             <Eyebrow light>Government &amp; Corporate Relations · Dubai</Eyebrow>

@@ -54,6 +54,58 @@
   }
 }
 
+/* Contained image (full variant): whole photo centred at banner height, edges faded into the navy.
+   Phones: the photo follows the copy as an uncropped block. */
+.page_hero_contain {
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+
+  @include up(md) {
+    flex-direction: row;
+    align-items: flex-end;
+    min-height: clamp(480px, 66vh, 640px);
+  }
+}
+.contain_media {
+  position: relative;
+  order: 2;
+  width: calc(100% - 2 * var(--gutter));
+  max-width: 440px;
+  aspect-ratio: 440 / 528;
+  margin: 32px auto 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+
+  @include up(md) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    z-index: -2;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    border-radius: 0;
+    transform: translateX(-50%);
+    // soft left/right edges so the photo melts into the navy background
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  }
+}
+.contain_shade {
+  display: none;
+
+  @include up(md) {
+    display: block;
+    // lighter than the cover shade: keep text legible on the left, leave the people visible
+    background:
+      linear-gradient(90deg, rgba(0, 26, 51, 0.9) 0%, rgba(0, 39, 77, 0.55) 35%, rgba(0, 39, 77, 0.12) 60%, rgba(0, 39, 77, 0.12) 100%),
+      linear-gradient(0deg, rgba(0, 26, 51, 0.7) 0%, transparent 45%);
+  }
+}
+
 /* Split variant (service pages): copy left, framed image right */
 .page_hero_split {
   min-height: 0;

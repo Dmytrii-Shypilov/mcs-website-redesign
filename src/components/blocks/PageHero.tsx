@@ -17,6 +17,12 @@ type PageHeroProps = {
   crumbs: Crumb[];
   /** "full": full-bleed background image (landing pages). "split": text left, framed image right (service pages). */
   variant?: "full" | "split";
+  /**
+   * Full variant only. "cover" fills the banner (large landscape photos). "contain" shows the whole photo,
+   * centred at banner height with faded edges — for small or portrait photos where people must stay visible.
+   * On phones a contained photo sits below the copy.
+   */
+  imageFit?: "cover" | "contain";
   objectPosition?: string;
 };
 
@@ -28,10 +34,12 @@ export default function PageHero({
   imageAlt,
   crumbs,
   variant = "full",
+  imageFit = "cover",
   objectPosition,
 }: PageHeroProps) {
   const all = [{ label: "Home", href: "/" }, ...crumbs];
   const split = variant === "split";
+  const contain = !split && imageFit === "contain";
 
   const breadcrumbs = (
     <nav aria-label="Breadcrumb" className={s.crumbs}>
@@ -55,7 +63,9 @@ export default function PageHero({
   );
 
   return (
-    <section className={[s.page_hero, split && s.page_hero_split].filter(Boolean).join(" ")}>
+    <section
+      className={[s.page_hero, split && s.page_hero_split, contain && s.page_hero_contain].filter(Boolean).join(" ")}
+    >
       {split ? (
         <Container className={s.split_inner}>
           <div className={s.split_copy}>{copy}</div>
@@ -73,6 +83,22 @@ export default function PageHero({
             </div>
           </div>
         </Container>
+      ) : contain ? (
+        <>
+          <div className={s.contain_media}>
+            <Image
+              src={image}
+              alt={imageAlt}
+              fill
+              priority
+              sizes="(min-width: 768px) 560px, 100vw"
+              className={s.hero_settle}
+              style={{ objectFit: "cover", objectPosition }}
+            />
+          </div>
+          <div className={[s.page_hero_shade, s.contain_shade].join(" ")} aria-hidden />
+          <Container className={s.page_hero_inner}>{copy}</Container>
+        </>
       ) : (
         <>
           <Image
