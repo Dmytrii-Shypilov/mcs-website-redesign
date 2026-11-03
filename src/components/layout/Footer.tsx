@@ -4,7 +4,7 @@ import Image from "next/image";
 import s from "./footer.module.scss";
 import { Container } from "../ui";
 import { IconMail, IconPhone, IconPin } from "../ui/icons";
-import { services, site } from "@/content/site";
+import { pillars, site } from "@/content/site";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -16,17 +16,18 @@ export default function Footer() {
           <div className={s.brand}>
             <Image src="/images/mcs-logo.svg" alt={site.name} width={132} height={44} className={s.logo} />
             <p className={s.about}>
-              {site.brandLong} — a {site.group} company. Government and corporate relations consultancy
-              headquartered in Dubai.
+              {site.brandLong} — a {site.group} company. International advisory headquartered in Dubai, serving
+              the UAE, GCC and Africa.
             </p>
+            <p className={s.partner}>{site.partnerModel}</p>
           </div>
 
           <nav aria-label="Services" className={s.col}>
             <h2 className={s.col_title}>Services</h2>
             <ul>
-              {services.map((sv) => (
-                <li key={sv.slug}>
-                  <Link href={`/services/${sv.slug}`}>{sv.title}</Link>
+              {pillars.map((pl) => (
+                <li key={pl.id}>
+                  <Link href={`/services#${pl.id}`}>{pl.title}</Link>
                 </li>
               ))}
             </ul>

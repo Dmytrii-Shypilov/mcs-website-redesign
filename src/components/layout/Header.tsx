@@ -4,18 +4,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 import s from "./header.module.scss";
-import { Container } from "../ui";
+import { Container, TextLink } from "../ui";
 import { IconChevron, IconClose, IconMenu, IconArrow } from "../ui/icons";
-import { nav, services, site } from "@/content/site";
+import { nav, pillars, servicesByPillar, site, type PillarId } from "@/content/site";
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function Header() {
   const pathname = usePathname();
+  const reduce = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropOpen, setDropOpen] = useState(false);
+  const [openPillar, setOpenPillar] = useState<PillarId | null>(null);
   const dropRef = useRef<HTMLLIElement>(null);
+  const dropBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -28,44 +34,34 @@ export default function Header() {
   useEffect(() => {
     setMenuOpen(false);
     setDropOpen(false);
+    setOpenPillar(null);
   }, [pathname]);
 
   // Lock body scroll when mobile menu is open; close with Escape
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-        setDropOpen(false);
-      }
+      if (e.key !== "Escape") return;
+      // Return focus to the trigger if it was inside the mega menu
+      if (dropRef.current?.contains(document.activeElement)) dropBtnRef.current?.focus();
+      setMenuOpen(false);
+      setDropOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
-  const solid = scrolled || menuOpen;
+  const solid = scrolled || menuOpen || dropOpen;
+  const fade = reduce ? { duration: 0 } : { duration: 0.2, ease: EASE };
+  const slide = reduce ? { duration: 0 } : { duration: 0.3, ease: EASE };
 
   return (
     <header className={[s.header, solid && s.solid].filter(Boolean).join(" ")}>
       <Container className={s.bar}>
         <Link href="/" className={s.logo} aria-label={`${site.name} — home`}>
-          <Image
-          fill={true}
-            src="/images/mcs-logo.svg"
-            alt=""
-            
-            priority
-            className={s.logo_light}
-          />
-          <Image
-            src="/images/mcs-logo.webp"
-            alt=""
-            width={111}
-            height={40}
-            priority
-            className={s.logo_dark}
-          />
+          <Image src="/images/mcs-logo.svg" alt="" width={111} height={40} priority className={s.logo_light} />
+          <Image src="/images/mcs-logo.webp" alt="" width={111} height={40} priority className={s.logo_dark} />
         </Link>
 
         <nav aria-label="Main" className={s.nav}>
@@ -90,6 +86,7 @@ export default function Header() {
                       {item.label}
                     </Link>
                     <button
+                      ref={dropBtnRef}
                       type="button"
                       className={s.drop_btn}
                       aria-expanded={dropOpen}
@@ -100,20 +97,52 @@ export default function Header() {
                       <IconChevron />
                     </button>
                   </div>
-                  <div id="services-menu" className={[s.drop, dropOpen && s.drop_open].filter(Boolean).join(" ")}>
-                    <ul>
-                      {services.map((sv) => (
-                        <li key={sv.slug}>
-                          <Link href={`/services/${sv.slug}`} className={s.drop_link}>
-                            <span className={s.drop_num}>{sv.number}</span>
-                            <span>
-                              <span className={s.drop_title}>{sv.title}</span>
-                              <span className={s.drop_text}>{sv.summary}</span>
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+
+                  <div id="services-menu" className={s.mega}>
+                    <AnimatePresence>
+                      {dropOpen && (
+                        <motion.div
+                          key="mega"
+                          className={s.mega_bridge}
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={fade}
+                        >
+                          <Container>
+                            <div className={s.mega_panel}>
+                              <div className={s.mega_cols}>
+                                {pillars.map((pl) => (
+                                  <div key={pl.id} className={s.mega_col}>
+                                    <Link href={`/services#${pl.id}`} className={s.mega_head}>
+                                      <span className={s.mega_num}>{pl.number}</span>
+                                      <span className={s.mega_title}>{pl.title}</span>
+                                    </Link>
+                                    <p className={s.mega_summary}>{pl.summary}</p>
+                                    <ul className={s.mega_links}>
+                                      {servicesByPillar(pl.id).map((sv) => (
+                                        <li key={sv.slug}>
+                                          <Link
+                                            href={`/services/${sv.slug}`}
+                                            className={s.mega_link}
+                                            aria-current={pathname === `/services/${sv.slug}` ? "page" : undefined}
+                                          >
+                                            {sv.title}
+                                          </Link>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className={s.mega_foot}>
+                                <TextLink href="/services">View all services</TextLink>
+                              </div>
+                            </div>
+                          </Container>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </li>
               ) : (
@@ -158,11 +187,45 @@ export default function Header() {
                   </Link>
                   {item.href === "/services" && (
                     <ul className={s.mobile_sub}>
-                      {services.map((sv) => (
-                        <li key={sv.slug}>
-                          <Link href={`/services/${sv.slug}`}>{sv.title}</Link>
-                        </li>
-                      ))}
+                      {pillars.map((pl) => {
+                        const open = openPillar === pl.id;
+                        const panelId = `mobile-pillar-${pl.id}`;
+                        return (
+                          <li key={pl.id}>
+                            <button
+                              type="button"
+                              className={s.acc_btn}
+                              aria-expanded={open}
+                              aria-controls={panelId}
+                              onClick={() => setOpenPillar(open ? null : pl.id)}
+                            >
+                              <span className={s.acc_num}>{pl.number}</span>
+                              <span className={s.acc_title}>{pl.title}</span>
+                              <IconChevron aria-hidden className={s.acc_icon} />
+                            </button>
+                            <div id={panelId}>
+                              <AnimatePresence initial={false}>
+                                {open && (
+                                  <motion.ul
+                                    key="list"
+                                    className={s.acc_list}
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={slide}
+                                  >
+                                    {servicesByPillar(pl.id).map((sv) => (
+                                      <li key={sv.slug}>
+                                        <Link href={`/services/${sv.slug}`}>{sv.title}</Link>
+                                      </li>
+                                    ))}
+                                  </motion.ul>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </li>

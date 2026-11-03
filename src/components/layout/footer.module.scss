@@ -32,6 +32,16 @@
   font-size: 14px;
   line-height: 1.7;
 }
+.partner {
+  max-width: 340px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-dark);
+  color: var(--steel-300);
+  font-size: 12px;
+  line-height: 1.6;
+  opacity: 0.85;
+}
 
 .col_title {
   font-family: var(--font-body);

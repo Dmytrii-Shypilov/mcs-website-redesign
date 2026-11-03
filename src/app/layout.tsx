@@ -31,19 +31,22 @@ const body = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | ${site.tagline} in Dubai`,
+    default: `${site.name} | ${site.tagline}`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
   applicationName: site.name,
   keywords: [
+    "international advisory Dubai",
     "government relations consultancy Dubai",
-    "corporate services UAE",
     "company formation UAE",
     "market entry GCC",
-    "business consultancy Africa",
-    "capital raising advisory Dubai",
-    "investor introductions",
+    "foreign investment advisory Africa",
+    "capital markets advisory Dubai",
+    "debt capital and project finance",
+    "private equity deal origination",
+    "corporate governance consultancy",
+    "real estate and major projects advisory",
   ],
   alternates: { canonical: "/" },
   openGraph: {
@@ -94,7 +97,7 @@ const orgSchema = {
   areaServed: ["United Arab Emirates", "Saudi Arabia", "Qatar", "Kuwait", "Bahrain", "Oman", "Africa"],
   hasOfferCatalog: {
     "@type": "OfferCatalog",
-    name: "Consultancy services",
+    name: "Advisory services",
     itemListElement: services.map((sv) => ({
       "@type": "Offer",
       itemOffered: { "@type": "Service", name: sv.title, url: `${site.url}/services/${sv.slug}` },

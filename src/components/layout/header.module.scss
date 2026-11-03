@@ -18,7 +18,16 @@
   color: var(--ink);
   border-bottom-color: var(--line);
   box-shadow: 0 8px 30px -18px rgba(0, 26, 51, 0.35);
-  backdrop-filter: saturate(160%) blur(10px);
+
+  // Blur lives on a pseudo-element: backdrop-filter on the header itself would make it the
+  // containing block for the fixed mobile menu and collapse the menu to the header's height.
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    backdrop-filter: saturate(160%) blur(10px);
+  }
 }
 
 .bar {
@@ -36,11 +45,14 @@
   height: 40px;
   width: 120px;
 
+  // Both logo files share one box, left-aligned, so the swap doesn't shift
   img {
     position: absolute;
     inset: 0;
+    width: 111px;
     height: 40px;
-    width: auto;
+    object-fit: contain;
+    object-position: left center;
     transition: opacity 0.3s var(--ease);
   }
 }
@@ -96,9 +108,9 @@
   }
 }
 
-/* Services dropdown */
+/* Services mega menu */
 .has_drop {
-  position: relative;
+  position: static; // panel is positioned against the fixed header, spanning the container
 }
 .drop_trigger {
   display: flex;
@@ -123,67 +135,97 @@
     transform: rotate(180deg);
   }
 }
-.drop {
+.mega {
   position: absolute;
-  top: calc(100% + 18px);
-  left: -28px;
-  width: 440px;
-  padding: 12px;
-  background: #fff;
-  color: var(--ink);
-  border-top: 2px solid var(--gold);
-  box-shadow: 0 24px 60px -20px rgba(0, 26, 51, 0.35);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(8px);
-  transition:
-    opacity 0.25s var(--ease),
-    transform 0.25s var(--ease),
-    visibility 0.25s;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.mega_bridge {
+  position: relative;
+  padding-top: 12px;
 
-  // hover bridge
+  // hover bridge between the nav link and the panel
   &::before {
     content: "";
     position: absolute;
     left: 0;
     right: 0;
-    top: -20px;
-    height: 20px;
+    top: -28px;
+    height: 40px;
   }
 }
-.drop_open {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
+.mega_panel {
+  position: relative;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--gold);
+  border-radius: var(--radius);
+  box-shadow: 0 24px 60px -20px rgba(0, 26, 51, 0.35);
 }
-.drop_link {
-  display: flex;
-  gap: 18px;
-  padding: 16px;
-  transition: background-color 0.2s;
+.mega_cols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.mega_col {
+  padding: 32px 28px 28px;
 
-  &:hover,
-  &:focus-visible {
-    background: var(--mist);
+  & + & {
+    border-left: 1px solid var(--line);
   }
 }
-.drop_num {
+.mega_head {
+  display: block;
+  margin-bottom: 10px;
+
+  &:hover .mega_title {
+    color: var(--blue-700);
+  }
+}
+.mega_num {
+  display: block;
   font-family: var(--font-display);
   font-size: 22px;
   line-height: 1;
   color: var(--gold);
+  margin-bottom: 10px;
 }
-.drop_title {
+.mega_title {
   display: block;
-  font-weight: 600;
-  font-size: 15px;
-  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.15;
+  transition: color 0.2s var(--ease);
 }
-.drop_text {
-  display: block;
+.mega_summary {
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--ink-3);
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.mega_link {
+  display: block;
+  padding-block: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: color 0.2s var(--ease);
+
+  &:hover,
+  &[aria-current="page"] {
+    color: var(--blue-700);
+  }
+}
+.mega_foot {
+  display: flex;
+  justify-content: flex-end;
+  padding: 18px 28px;
+  border-top: 1px solid var(--line);
+  background: var(--mist);
 }
 
 /* CTA */
@@ -273,15 +315,56 @@
   }
 }
 .mobile_sub {
-  padding: 0 0 20px 16px;
+  padding: 0 0 16px 16px;
   border-left: 1px solid var(--gold);
   margin-bottom: 16px;
+}
+.acc_btn {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  padding-block: 12px;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.acc_num {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--gold);
+}
+.acc_title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.acc_icon {
+  flex-shrink: 0;
+  align-self: center;
+  width: 16px;
+  height: 16px;
+  color: var(--ink-3);
+  transition: transform 0.3s var(--ease);
+
+  [aria-expanded="true"] > & {
+    transform: rotate(180deg);
+  }
+}
+.acc_list {
+  overflow: hidden;
+  padding-left: 30px;
 
   a {
     display: block;
-    padding-block: 8px;
+    padding-block: 7px;
     font-size: 15px;
     color: var(--ink-2);
+  }
+  li:last-child a {
+    padding-bottom: 14px;
   }
 }
 .mobile_contact {

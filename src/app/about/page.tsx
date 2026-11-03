@@ -7,12 +7,12 @@ import CtaBand from "@/components/blocks/CtaBand";
 import Partners from "@/components/blocks/Partners";
 import { Container, Eyebrow, Section, SectionHeading } from "@/components/ui";
 import Reveal from "@/components/ui/Reveal";
-import { site, values } from "@/content/site";
+import { countWord, pillars, site, values } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "About MCS — Maria Consultancy Services",
   description:
-    "MCS is a Dubai-based government and corporate relations consultancy within Maria Group International, serving clients across the UAE, GCC and Africa.",
+    "MCS is a Dubai-based international advisory firm within Maria Group International, serving clients across the UAE, GCC and Africa in market entry, government relations, capital and major projects.",
   alternates: { canonical: "/about" },
 };
 
@@ -42,9 +42,17 @@ export default function AboutPage() {
               grew, and MCS opened its expertise to external corporate and governmental clients.
             </p>
             <p>
-              Today MCS is a cluster of companies in several jurisdictions, each with a specialised focus. Our clients
-              are at the centre of every engagement, and our solutions follow their goals.
+              Today MCS is a cluster of companies in several jurisdictions, advising clients across{" "}
+              {countWord(pillars.length)} practices:{" "}
+              {pillars.map((pl, i) => (
+                <span key={pl.id}>
+                  {i > 0 && (i === pillars.length - 1 ? " and " : ", ")}
+                  {pl.title}
+                </span>
+              ))}
+              . {site.partnerModel}
             </p>
+            <p>Our clients are at the centre of every engagement, and our solutions follow their goals.</p>
           </Reveal>
         </Container>
       </Section>

@@ -9,7 +9,7 @@ import { site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact Us — Book a Consultation in Dubai",
-  description: `Contact MCS in Business Bay, Dubai. Call ${site.phone} or email ${site.email} to discuss corporate services, government relations or capital facilitation.`,
+  description: `Contact MCS in Business Bay, Dubai. Call ${site.phone} or email ${site.email} to discuss market entry, government relations, capital or major projects.`,
   alternates: { canonical: "/contact" },
 };
 

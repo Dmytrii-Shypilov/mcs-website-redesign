@@ -4,10 +4,20 @@ import Link from "next/link";
 import s from "./home.module.scss";
 import { ButtonLink, Container, Eyebrow, Section, SectionHeading, TextLink } from "@/components/ui";
 import Reveal from "@/components/ui/Reveal";
+import Backdrop from "@/components/ui/Backdrop";
 import { IconArrow, IconCheck, pillarIcons } from "@/components/ui/icons";
 import CtaBand from "@/components/blocks/CtaBand";
 import Partners from "@/components/blocks/Partners";
-import { approach, industries, regions, services, site } from "@/content/site";
+import {
+  approach,
+  countWord,
+  featuredIndustries,
+  industries,
+  pillars,
+  regions,
+  servicesByPillar,
+  site,
+} from "@/content/site";
 
 export default function HomePage() {
   return (
@@ -31,7 +41,7 @@ export default function HomePage() {
             </h1>
             <p className={s.hero_lead}>
               MCS connects international companies, investors and institutions with the UAE, GCC and Africa — through
-              corporate services, government relations and capital facilitation.
+              market entry, government relations, capital and major-project facilitation.
             </p>
             <div className={s.hero_actions}>
               <ButtonLink href="/contact" variant="gold">
@@ -108,26 +118,28 @@ export default function HomePage() {
           <SectionHeading
             id="services-title"
             eyebrow="Our expertise"
-            title="Three practices. One integrated partner."
-            intro="Each practice stands alone, and together they cover the full journey — from set-up and access to growth capital."
+            title={`${countWord(pillars.length, true)} practices. One integrated partner.`}
+            intro="Each practice stands alone; together they cover the full journey, from set-up and approvals to capital and delivery."
             align="split"
           />
           <ul className={s.services}>
-            {services.map((sv, i) => {
-              const Icon = pillarIcons[sv.pillar];
+            {pillars.map((pl, i) => {
+              const Icon = pillarIcons[pl.id];
               return (
-                <Reveal as="li" key={sv.slug} delay={i * 0.08} className={s.service}>
-                  <Link href={`/services/${sv.slug}`} className={s.service_link}>
+                <Reveal as="li" key={pl.id} delay={i * 0.08} className={s.service}>
+                  <Link href={`/services#${pl.id}`} className={s.service_link}>
                     <div className={s.service_top}>
-                      <span className={s.service_num}>{sv.number}</span>
+                      <span className={s.service_num}>{pl.number}</span>
                       <Icon className={s.service_icon} aria-hidden />
                     </div>
-                    <h3 className={s.service_title}>{sv.title}</h3>
-                    <p className={s.service_text}>{sv.summary}</p>
+                    <h3 className={s.service_title}>{pl.title}</h3>
+                    <p className={s.service_text}>{pl.summary}</p>
                     <ul className={s.service_list}>
-                      {sv.offerings.slice(0, 3).map((o) => (
-                        <li key={o.title}>{o.title}</li>
-                      ))}
+                      {servicesByPillar(pl.id)
+                        .slice(0, 3)
+                        .map((sv) => (
+                          <li key={sv.slug}>{sv.title}</li>
+                        ))}
                     </ul>
                     <span className={s.service_more}>
                       Learn more <IconArrow aria-hidden />
@@ -142,6 +154,7 @@ export default function HomePage() {
 
       {/* MARKETS */}
       <Section tone="deep" className={s.markets} labelledBy="markets-title">
+        <Backdrop src="/images/world-map-blue.webp" className={s.markets_map} />
         <Container>
           <SectionHeading
             id="markets-title"
@@ -188,16 +201,29 @@ export default function HomePage() {
             align="split"
           />
           <ul className={s.industries}>
-            {industries.map((ind, i) => (
-              <Reveal as="li" key={ind.id} delay={(i % 3) * 0.06} className={s.industry}>
+            {featuredIndustries.map((ind, i) => (
+              <Reveal as="li" key={ind.id} delay={(i % 3) * 0.08} className={s.industry}>
                 <Link href={`/industries#${ind.id}`}>
-                  <span className={s.industry_num}>{String(i + 1).padStart(2, "0")}</span>
+                  <div className={s.industry_media}>
+                    <Image
+                      src={ind.image}
+                      alt={ind.imageAlt}
+                      fill
+                      sizes="(min-width: 1024px) 380px, 100vw"
+                      className={s.industry_img}
+                      style={ind.objectPosition ? { objectPosition: ind.objectPosition } : undefined}
+                    />
+                  </div>
+                  <span className={s.industry_num}>{String(industries.indexOf(ind) + 1).padStart(2, "0")}</span>
                   <h3 className={s.industry_title}>{ind.title}</h3>
                   <p className={s.industry_text}>{ind.text}</p>
                 </Link>
               </Reveal>
             ))}
           </ul>
+          <div className={s.industries_more}>
+            <TextLink href="/industries">{`View all ${industries.length} sectors`}</TextLink>
+          </div>
         </Container>
       </Section>
 
